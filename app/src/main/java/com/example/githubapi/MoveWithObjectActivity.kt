@@ -16,9 +16,9 @@ class MoveWithObjectActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_move_with_object_detailuser)
 
-        val user = intent.getParcelableExtra<Users>(EXTRA_USER) as Users
+        val user = intent.getParcelableExtra<Users>(EXTRA_USER) as UsersResponse
         var imgPhoto: ImageView = findViewById(R.id.img_item_avatar_detail)
-        val picAvatar = user.avatar;
+        val picAvatar = user.avatarUrl;
         Glide.with(this)
             .load(picAvatar)
             .circleCrop()

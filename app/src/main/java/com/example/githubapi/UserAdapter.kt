@@ -7,7 +7,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.githubedwin.model.Users
 
 class UserAdapter (private val list: ArrayList<UsersResponse>): RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
 
@@ -44,11 +43,14 @@ class UserAdapter (private val list: ArrayList<UsersResponse>): RecyclerView.Ada
 
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
         holder.bind(list[position])
+        holder.itemView.setOnClickListener {
+            onItemClickCallback.onItemClicked(list[holder.adapterPosition])
+        }
     }
 
     override fun getItemCount(): Int = list.size
 
     interface OnItemClickCallback {
-        fun onItemClicked(data: Users)
+        fun onItemClicked(data: UsersResponse)
     }
 }

@@ -8,23 +8,17 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.View
-import android.widget.ImageView
 import android.widget.ProgressBar
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.example.githubapi.model.User
 import com.example.githubedwin.model.Users
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.*
 import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity() {
@@ -33,17 +27,17 @@ class MainActivity : AppCompatActivity() {
     private val list = ArrayList<UsersResponse>()
     private val listData = ArrayList<Users>()
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val rvUser: RecyclerView = findViewById(R.id.rvUser)
+        rvUser = findViewById(R.id.rvUser)
         rvUser.setHasFixedSize(true)
+
         rvUser.layoutManager = LinearLayoutManager(this)
 
         getUsers()
-//        showRecyclerList()
+        showRecyclerList()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -102,22 +96,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setViewData(consumeData: List<ItemsItem>) {
-        val listUsers = ArrayList<String>()
-        for (dataList in consumeData) {
-            val tvImages: ImageView = findViewById(R.id.img_item_avatar)
-            val ava = "${dataList.avatarUrl}"
-            val imgData = Glide.with(this)
-                .load(ava)
-                .circleCrop()
-                .into(tvImages)
-
-            listUsers.add(
-                """
-                  ${dataList.login} - ${dataList.type}
-                """.trimIndent()
-            )
-        }
-        val adapter = UserSearchAdapter(listUsers)
+        val adapter = UserSearchAdapter(consumeData)
         val rvUser: RecyclerView = findViewById(R.id.rvUser)
         rvUser.adapter = adapter
     }
@@ -154,20 +133,19 @@ class MainActivity : AppCompatActivity() {
         } else {
             rvUser.layoutManager = LinearLayoutManager(this)
         }
-        val listUser = ArrayList<UsersResponse>()
-        val listUserAdapter = UserAdapter(listUser)
-        rvUser.adapter = listUserAdapter
-        listUserAdapter.setOnItemClickCallback(object: UserAdapter.OnItemClickCallback {
-            override fun onItemClicked(data: Users) {
+        val userAdapter = UserAdapter(list)
+        rvUser.adapter = userAdapter
+        userAdapter.setOnItemClickCallback(object: UserAdapter.OnItemClickCallback {
+            override fun onItemClicked(data: UsersResponse) {
                 showSelectedUser(data)
             }
         })
     }
 
-    private fun showSelectedUser(user: Users) {
-        Toast.makeText(this, "Anda memilih " + user.userName, Toast.LENGTH_SHORT).show()
+    private fun showSelectedUser(consumeData: UsersResponse) {
+        Toast.makeText(this, "Anda memilih " +  consumeData.login, Toast.LENGTH_SHORT).show()
         val moveWithObjectIntent = Intent(this@MainActivity, MoveWithObjectActivity::class.java)
-        moveWithObjectIntent.putExtra(MoveWithObjectActivity.EXTRA_USER, user)
+        moveWithObjectIntent.putExtra(MoveWithObjectActivity.EXTRA_USER, list)
         startActivity(moveWithObjectIntent)
     }
 
