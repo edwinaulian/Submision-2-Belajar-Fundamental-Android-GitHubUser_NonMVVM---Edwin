@@ -127,6 +127,36 @@ class MainActivity : AppCompatActivity() {
             }
         )}
 
+    private fun getDetailUser(consumeData: UsersResponse) {
+        showLoading(true)
+        RetrofitClient.instance.getDetailUser(consumeData.login).enqueue(
+            object: Callback<List<UsersResponse>> {
+                override fun onResponse(
+                    call: Call<List<UsersResponse>>,
+                    response: Response<List<UsersResponse>>
+                ) {
+                    if (response.isSuccessful) {
+                        showLoading(false)
+                        response.body()?.let { list.addAll(it) }
+                        val adapter = UserAdapter(list)
+                        val rvUser: RecyclerView = findViewById(R.id.rvUser)
+                        rvUser.adapter = adapter
+                        Log.e(TAG, "Response sukses")
+                    } else {
+                        Log.e(TAG, "onFailure: ${response.message()}")
+                        Toast.makeText(this@MainActivity, "${response.message()}", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<List<UsersResponse>>, t: Throwable) {
+                  showLoading(false)
+                    Log.e(TAG, "onFailure: ${t.message}")
+                }
+
+            }
+        )
+    }
+
     private fun showRecyclerList() {
         if (applicationContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             rvUser.layoutManager = GridLayoutManager(this, 2)
@@ -138,12 +168,14 @@ class MainActivity : AppCompatActivity() {
         userAdapter.setOnItemClickCallback(object: UserAdapter.OnItemClickCallback {
             override fun onItemClicked(data: UsersResponse) {
                 showSelectedUser(data)
+                Log.d(TAG, data.login)
             }
         })
     }
 
     private fun showSelectedUser(consumeData: UsersResponse) {
         Toast.makeText(this, "Anda memilih " +  consumeData.login, Toast.LENGTH_SHORT).show()
+        getDetailUser(consumeData)
         val moveWithObjectIntent = Intent(this@MainActivity, MoveWithObjectActivity::class.java)
         moveWithObjectIntent.putExtra(MoveWithObjectActivity.EXTRA_USER, list)
         startActivity(moveWithObjectIntent)
