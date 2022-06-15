@@ -7,4 +7,5 @@
     <string name="avatar">Avatar Detail</string>
     <string name="tab_text_1">Followers</string>
     <string name="tab_text_2">Following</string>
+    <string name="to_category">button</string>
 </resources>

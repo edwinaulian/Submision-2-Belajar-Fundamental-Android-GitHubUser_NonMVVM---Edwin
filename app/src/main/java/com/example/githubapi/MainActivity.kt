@@ -12,6 +12,7 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,7 +22,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import kotlin.collections.ArrayList
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), UserAdapter.OnItemClickListener  {
 
     private lateinit var rvUser: RecyclerView
     private val list = ArrayList<UsersResponse>()
@@ -112,7 +113,7 @@ class MainActivity : AppCompatActivity() {
                     if (response.isSuccessful) {
                         showLoading(false)
                         response.body()?.let { list.addAll(it) }
-                        val adapter = UserAdapter(list)
+                        val adapter = UserAdapter(list, this@MainActivity)
                         val rvUser: RecyclerView = findViewById(R.id.rvUser)
                         rvUser.adapter = adapter
                     } else {
@@ -127,9 +128,10 @@ class MainActivity : AppCompatActivity() {
             }
         )}
 
-    private fun getDetailUser(consumeData: UsersResponse) {
+    private fun getDetailUser(consumeData: String) {
+        Log.d(TAG, "HELLO ${consumeData}" )
         showLoading(true)
-        RetrofitClient.instance.getDetailUser(consumeData.login).enqueue(
+        RetrofitClient.instance.getDetailUser(consumeData).enqueue(
             object: Callback<List<UsersResponse>> {
                 override fun onResponse(
                     call: Call<List<UsersResponse>>,
@@ -138,10 +140,9 @@ class MainActivity : AppCompatActivity() {
                     if (response.isSuccessful) {
                         showLoading(false)
                         response.body()?.let { list.addAll(it) }
-                        val adapter = UserAdapter(list)
+                        val adapter = UserAdapter(list, this@MainActivity)
                         val rvUser: RecyclerView = findViewById(R.id.rvUser)
                         rvUser.adapter = adapter
-                        Log.e(TAG, "Response sukses")
                     } else {
                         Log.e(TAG, "onFailure: ${response.message()}")
                         Toast.makeText(this@MainActivity, "${response.message()}", Toast.LENGTH_SHORT).show()
@@ -163,19 +164,24 @@ class MainActivity : AppCompatActivity() {
         } else {
             rvUser.layoutManager = LinearLayoutManager(this)
         }
-        val userAdapter = UserAdapter(list)
+        val userAdapter = UserAdapter(list, this)
         rvUser.adapter = userAdapter
-        userAdapter.setOnItemClickCallback(object: UserAdapter.OnItemClickCallback {
-            override fun onItemClicked(data: UsersResponse) {
-                showSelectedUser(data)
-                Log.d(TAG, data.login)
-            }
-        })
+//        userAdapter.setOnItemClickCallback(object: UserAdapter.OnItemClickListener {
+//            override fun onItemClick(data: UsersResponse) {
+//                showSelectedUser(data)
+//                Log.d(TAG, data.login)
+//            }
+//        })
+    }
+
+    override fun onItemClick(data: UsersResponse) {
+        showSelectedUser(data)
+        Log.d(TAG, data.login)
     }
 
     private fun showSelectedUser(consumeData: UsersResponse) {
         Toast.makeText(this, "Anda memilih " +  consumeData.login, Toast.LENGTH_SHORT).show()
-        getDetailUser(consumeData)
+        getDetailUser(consumeData.login)
         val moveWithObjectIntent = Intent(this@MainActivity, MoveWithObjectActivity::class.java)
         moveWithObjectIntent.putExtra(MoveWithObjectActivity.EXTRA_USER, list)
         startActivity(moveWithObjectIntent)

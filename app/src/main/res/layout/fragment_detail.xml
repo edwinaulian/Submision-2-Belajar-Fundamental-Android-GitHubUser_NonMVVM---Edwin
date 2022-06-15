@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="10dp"
-    tools:context=".MoveWithObjectActivity">
+    tools:context=".DetailFragment">
 
     <ImageView
         android:id="@+id/img_item_avatar_detail"

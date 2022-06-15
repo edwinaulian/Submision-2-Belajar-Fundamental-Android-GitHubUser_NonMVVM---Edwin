@@ -9,13 +9,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 
-class UserAdapter (private val list: ArrayList<UsersResponse>): RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
+class UserAdapter (private val list: ArrayList<UsersResponse>, private var listener: OnItemClickListener): RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
 
-    private lateinit var onItemClickCallback: OnItemClickCallback
-    private lateinit var onClickListener: View.OnClickListener
+    //private lateinit var onItemClickCallback: OnItemClickCallback
 
-    fun setOnItemClickCallback(onItemClickCallback: OnItemClickCallback) {
-        this.onItemClickCallback = onItemClickCallback
+    fun setOnItemClickCallback(onItemClickCallback: OnItemClickListener) {
+        listener = onItemClickCallback
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
@@ -26,7 +25,7 @@ class UserAdapter (private val list: ArrayList<UsersResponse>): RecyclerView.Ada
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
         holder.bind(list[position])
         holder.itemView.setOnClickListener {
-            onItemClickCallback.onItemClicked(list[holder.adapterPosition])
+            listener.onItemClick(list[holder.adapterPosition])
         }
     }
 
@@ -49,10 +48,15 @@ class UserAdapter (private val list: ArrayList<UsersResponse>): RecyclerView.Ada
                     .circleCrop()
                     .into(imgPhoto)
             }
+
         }
     }
 
-    interface OnItemClickCallback {
-        fun onItemClicked(data: UsersResponse)
+    interface OnItemClickListener {
+        fun onItemClick(data: UsersResponse)
     }
+
+//    interface OnItemClickCallback {
+//        fun onItemClicked(data: UsersResponse)
+//    }
 }
