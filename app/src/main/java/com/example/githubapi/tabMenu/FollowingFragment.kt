@@ -1,60 +1,80 @@
 package com.example.githubapi.tabMenu
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.example.githubapi.ListFollowersResponseItem
 import com.example.githubapi.R
+import com.example.githubapi.RetrofitClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [FollowingFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class FollowingFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+
+    private val list = ArrayList<ListFollowersResponseItem>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+        val llm = LinearLayoutManager(context)
+        llm.orientation = LinearLayoutManager.VERTICAL
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_following, container, false)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment FollowingFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            FollowingFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val user = arguments?.getString("key")
+        if (user != null) {
+            val client = RetrofitClient.getApiService().getFollowers(user)
+            client.enqueue(object: Callback<ArrayList<ListFollowersResponseItem>> {
+                override fun onResponse(call: Call<ArrayList<ListFollowersResponseItem>>, response: Response<ArrayList<ListFollowersResponseItem>>) {
+                    if (response.isSuccessful) {
+                        val responseBody = response.body()
+                        if (responseBody != null) {
+                            response.body()?.let { list.addAll(it) }
+                            bindImageAva(view, responseBody)
+                        }
+                    } else {
+                        Log.e(FollowingFragment.TAG,"onFailure: ${response.message()}")
+                    }
+                }
+
+                override fun onFailure(call: Call<ArrayList<ListFollowersResponseItem>>, t: Throwable) {
+                    Log.e(FollowingFragment.TAG, "onFailure: ${t.message}")
+                }
+            })
+        }
+    }
+
+    private fun bindImageAva(view: View, data: ArrayList<ListFollowersResponseItem>?) {
+        val imgPhoto  : ImageView = view.findViewById(R.id.img_item_avatar_detail_activity_following)
+        val tvUserName: TextView = view.findViewById(R.id.tvUserNameListFollowing)
+        val tvUserType: TextView = view.findViewById(R.id.tvTypeListFollowing)
+        if (data != null) {
+            for (item in data) {
+                if (data != null) {
+                    tvUserName.text = item.login
+                    tvUserType.text = item.type
+                    Glide.with(this@FollowingFragment)
+                        .load(item.avatarUrl)
+                        .circleCrop()
+                        .into(imgPhoto)
                 }
             }
+        }
+    }
+
+    companion object {
+        private const val TAG = "Following User"
     }
 }

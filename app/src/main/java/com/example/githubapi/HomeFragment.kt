@@ -25,9 +25,6 @@ class HomeFragment : Fragment() {
          binding.rvUser.setOnClickListener(
              Navigation.createNavigateOnClickListener(R.id.action_homeFragment_to_detailFragment)
          )
-//       binding.rvUser.setOnClickListener { view ->
-//           view.findNavController().navigate(R.id.action_homeFragment_to_mainActivity)
-//       }
     }
 
     override fun onDestroy() {

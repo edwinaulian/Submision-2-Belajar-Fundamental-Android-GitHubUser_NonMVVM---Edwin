@@ -9,10 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.githubapi.tabMenu.FollowersFragment
 
-class UserFollowersFollowingAdapter(
-    private val list: ArrayList<ListFollowersResponseItem>,
-    followersFragment: FollowersFragment
-): RecyclerView.Adapter<UserFollowersFollowingAdapter.UserViewHolder>() {
+class UserFollowersFollowingAdapter(private val list: ArrayList<ListFollowersResponseItem>, followersFragment: FollowersFragment): RecyclerView.Adapter<UserFollowersFollowingAdapter.UserViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.fragment_followers, parent, false)
