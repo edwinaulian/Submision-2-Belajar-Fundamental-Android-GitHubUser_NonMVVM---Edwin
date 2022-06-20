@@ -21,17 +21,6 @@
     app:layout_constraintTop_toTopOf="parent"
     tools:context=".HomeFragment"/>
 
-    <Button
-        android:id="@+id/btn_category"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:text="@string/to_category" />
-
 <ProgressBar
     android:id="@+id/progressBar"
     style="?android:attr/progressBarStyle"

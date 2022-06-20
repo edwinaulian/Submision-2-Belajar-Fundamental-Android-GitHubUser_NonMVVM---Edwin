@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import java.io.Serializable
 
 class UserAdapter (private val list: ArrayList<UsersResponse>, private var listener: OnItemClickListener): RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
 

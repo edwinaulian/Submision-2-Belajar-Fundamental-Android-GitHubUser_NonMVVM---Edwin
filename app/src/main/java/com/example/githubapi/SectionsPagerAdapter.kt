@@ -7,9 +7,6 @@ import com.example.githubapi.tabMenu.FollowersFragment
 import com.example.githubapi.tabMenu.FollowingFragment
 
 class SectionsPagerAdapter(activity: AppCompatActivity) : FragmentStateAdapter(activity) {
-    override fun getItemCount(): Int {
-        return  2
-    }
 
     override fun createFragment(position: Int): Fragment {
         var fragment: Fragment? = null
@@ -18,6 +15,10 @@ class SectionsPagerAdapter(activity: AppCompatActivity) : FragmentStateAdapter(a
             1 -> fragment = FollowingFragment()
         }
         return fragment as Fragment
+    }
+
+    override fun getItemCount(): Int {
+        return  2
     }
 
 }

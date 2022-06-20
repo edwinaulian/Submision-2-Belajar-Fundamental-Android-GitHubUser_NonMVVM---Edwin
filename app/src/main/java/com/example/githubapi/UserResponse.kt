@@ -2,7 +2,7 @@ package com.example.githubapi
 
 import com.google.gson.annotations.SerializedName
 
-data class UsersResponse(
+data class UsersResponse (
     @field:SerializedName("gists_url")
     val gistsUrl: String,
 

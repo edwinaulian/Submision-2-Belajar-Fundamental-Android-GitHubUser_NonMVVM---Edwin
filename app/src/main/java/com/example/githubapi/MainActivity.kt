@@ -16,17 +16,19 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.githubapi.model.User
 import com.example.githubedwin.model.Users
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.Serializable
 import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity(), UserAdapter.OnItemClickListener  {
 
     private lateinit var rvUser: RecyclerView
     private val list = ArrayList<UsersResponse>()
-    private val listData = ArrayList<Users>()
+    private val listData = listOf<UsersResponse>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +40,7 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnItemClickListener  {
         rvUser.layoutManager = LinearLayoutManager(this)
 
         getUsers()
-        showRecyclerList()
+        //showRecyclerList()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -69,7 +71,8 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnItemClickListener  {
 
     private fun findUser(query: String) {
         showLoading(true)
-        RetrofitClient.instance.getSearchUser(query).enqueue(
+        val client =RetrofitClient.getApiService().getSearchUser(query)
+        client.enqueue(
             object: Callback<UserSearchResponse>{
                 override fun onResponse(
                     call: Call<UserSearchResponse>,
@@ -104,7 +107,8 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnItemClickListener  {
 
     private fun getUsers() {
         showLoading(true)
-        RetrofitClient.instance.getListUsers().enqueue(
+        val client =RetrofitClient.getApiService().getListUsers()
+        client.enqueue(
             object: Callback<ArrayList<UsersResponse>>{
                 override fun onResponse(
                     call: Call<ArrayList<UsersResponse>>,
@@ -128,36 +132,6 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnItemClickListener  {
             }
         )}
 
-    private fun getDetailUser(consumeData: String) {
-        Log.d(TAG, "HELLO ${consumeData}" )
-        showLoading(true)
-        RetrofitClient.instance.getDetailUser(consumeData).enqueue(
-            object: Callback<List<UsersResponse>> {
-                override fun onResponse(
-                    call: Call<List<UsersResponse>>,
-                    response: Response<List<UsersResponse>>
-                ) {
-                    if (response.isSuccessful) {
-                        showLoading(false)
-                        response.body()?.let { list.addAll(it) }
-                        val adapter = UserAdapter(list, this@MainActivity)
-                        val rvUser: RecyclerView = findViewById(R.id.rvUser)
-                        rvUser.adapter = adapter
-                    } else {
-                        Log.e(TAG, "onFailure: ${response.message()}")
-                        Toast.makeText(this@MainActivity, "${response.message()}", Toast.LENGTH_SHORT).show()
-                    }
-                }
-
-                override fun onFailure(call: Call<List<UsersResponse>>, t: Throwable) {
-                  showLoading(false)
-                    Log.e(TAG, "onFailure: ${t.message}")
-                }
-
-            }
-        )
-    }
-
     private fun showRecyclerList() {
         if (applicationContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             rvUser.layoutManager = GridLayoutManager(this, 2)
@@ -176,14 +150,12 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnItemClickListener  {
 
     override fun onItemClick(data: UsersResponse) {
         showSelectedUser(data)
-        Log.d(TAG, data.login)
     }
 
     private fun showSelectedUser(consumeData: UsersResponse) {
         Toast.makeText(this, "Anda memilih " +  consumeData.login, Toast.LENGTH_SHORT).show()
-        getDetailUser(consumeData.login)
         val moveWithObjectIntent = Intent(this@MainActivity, MoveWithObjectActivity::class.java)
-        moveWithObjectIntent.putExtra(MoveWithObjectActivity.EXTRA_USER, list)
+        moveWithObjectIntent.putExtra(MoveWithObjectActivity.EXTRA_USER, consumeData.login )
         startActivity(moveWithObjectIntent)
     }
 

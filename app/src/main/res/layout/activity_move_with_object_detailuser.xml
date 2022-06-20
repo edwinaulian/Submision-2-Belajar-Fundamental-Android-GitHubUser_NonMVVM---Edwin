@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -9,14 +10,41 @@
     tools:context=".MoveWithObjectActivity">
 
     <ImageView
-        android:id="@+id/img_item_avatar_detail"
-        android:layout_width="350dp"
+        android:id="@+id/img_item_avatar_detail_activity"
+        android:layout_width="323dp"
         android:layout_height="103dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:contentDescription="@string/avatar"
         tools:src="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/tvFollowers"
+        android:layout_width="178dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:text="@string/tab_text_1"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/img_item_avatar_detail_activity"
+        app:layout_constraintTop_toBottomOf="@+id/img_item_avatar_detail_activity" />
+
+    <TextView
+        android:id="@+id/tvFollowing"
+        android:layout_width="183dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="200dp"
+        android:layout_marginTop="-20dp"
+        android:layout_marginEnd="16dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:text="@string/tab_text_2"
+        android:visibility="visible" />
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabs"
