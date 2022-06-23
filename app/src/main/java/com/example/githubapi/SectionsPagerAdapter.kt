@@ -6,13 +6,15 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.githubapi.tabMenu.FollowersFragment
 import com.example.githubapi.tabMenu.FollowingFragment
 
-class SectionsPagerAdapter(activity: AppCompatActivity) : FragmentStateAdapter(activity) {
+class SectionsPagerAdapter(activity: AppCompatActivity, user: String) : FragmentStateAdapter(activity) {
+
+    val user = user
 
     override fun createFragment(position: Int): Fragment {
         var fragment: Fragment? = null
         when (position) {
-            0 -> fragment = FollowersFragment()
-            1 -> fragment = FollowingFragment()
+            0 -> fragment = FollowersFragment(user)
+            1 -> fragment = FollowingFragment(user)
         }
         return fragment as Fragment
     }

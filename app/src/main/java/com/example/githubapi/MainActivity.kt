@@ -3,7 +3,6 @@ package com.example.githubapi
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -12,23 +11,17 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.githubapi.model.User
-import com.example.githubedwin.model.Users
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.Serializable
 import kotlin.collections.ArrayList
 
-class MainActivity : AppCompatActivity(), UserAdapter.OnItemClickListener  {
+class MainActivity : AppCompatActivity(), UserAdapter.OnItemClickListener, UserSearchAdapter.OnItemClickListener  {
 
     private lateinit var rvUser: RecyclerView
     private val list = ArrayList<UsersResponse>()
-    private val listData = listOf<UsersResponse>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +33,6 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnItemClickListener  {
         rvUser.layoutManager = LinearLayoutManager(this)
 
         getUsers()
-        //showRecyclerList()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -49,7 +41,6 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnItemClickListener  {
 
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
         val searchView = menu.findItem(R.id.search).actionView as SearchView
-
         searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
         searchView.queryHint = "Input user name here"
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -64,7 +55,6 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnItemClickListener  {
             override fun onQueryTextChange(newText: String): Boolean {
                 return false
             }
-
         })
         return true
     }
@@ -73,7 +63,7 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnItemClickListener  {
         showLoading(true)
         val client =RetrofitClient.getApiService().getSearchUser(query)
         client.enqueue(
-            object: Callback<UserSearchResponse>{
+            object: Callback<UserSearchResponse> {
                 override fun onResponse(
                     call: Call<UserSearchResponse>,
                     response: Response<UserSearchResponse>
@@ -82,9 +72,9 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnItemClickListener  {
                         showLoading(false)
                         val responseBody = response.body()
                         if (responseBody != null) {
-                              setViewData(responseBody.items)
+                            setViewData(responseBody.items)
                         }
-                    } else {
+                    }  else {
                         Log.e(TAG, "onFailure: ${response.message()}")
                         Toast.makeText(this@MainActivity, "${response.message()}", Toast.LENGTH_SHORT).show()
                     }
@@ -100,7 +90,7 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnItemClickListener  {
     }
 
     private fun setViewData(consumeData: List<ItemsItem>) {
-        val adapter = UserSearchAdapter(consumeData)
+        val adapter = UserSearchAdapter(consumeData , this@MainActivity)
         val rvUser: RecyclerView = findViewById(R.id.rvUser)
         rvUser.adapter = adapter
     }
@@ -132,24 +122,19 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnItemClickListener  {
             }
         )}
 
-    private fun showRecyclerList() {
-        if (applicationContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            rvUser.layoutManager = GridLayoutManager(this, 2)
-        } else {
-            rvUser.layoutManager = LinearLayoutManager(this)
-        }
-        val userAdapter = UserAdapter(list, this)
-        rvUser.adapter = userAdapter
-//        userAdapter.setOnItemClickCallback(object: UserAdapter.OnItemClickListener {
-//            override fun onItemClick(data: UsersResponse) {
-//                showSelectedUser(data)
-//                Log.d(TAG, data.login)
-//            }
-//        })
-    }
-
     override fun onItemClick(data: UsersResponse) {
         showSelectedUser(data)
+    }
+
+    override fun onItemClickUserSearch(data: ItemsItem) {
+        showSelectedUserSearch(data)
+    }
+
+    private fun showSelectedUserSearch(consumeData: ItemsItem) {
+        Toast.makeText(this, "Anda memilih" + consumeData.login, Toast.LENGTH_SHORT).show()
+        val moveWithObjectIntent = Intent(this@MainActivity, MoveWithObjectActivity::class.java)
+        moveWithObjectIntent.putExtra(MoveWithObjectActivity.EXTRA_USER, consumeData.login )
+        startActivity(moveWithObjectIntent)
     }
 
     private fun showSelectedUser(consumeData: UsersResponse) {

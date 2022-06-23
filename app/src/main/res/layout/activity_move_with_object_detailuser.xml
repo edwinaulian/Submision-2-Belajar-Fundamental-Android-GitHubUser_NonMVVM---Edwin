@@ -56,5 +56,5 @@
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/view_pager"
         android:layout_width="366dp"
-        android:layout_height="13dp" />
+        android:layout_height="511dp" />
 </LinearLayout>

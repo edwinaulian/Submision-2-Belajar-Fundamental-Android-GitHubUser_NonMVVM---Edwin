@@ -1,6 +1,5 @@
 package com.example.githubapi
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,11 +7,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import java.io.Serializable
 
 class UserAdapter (private val list: ArrayList<UsersResponse>, private var listener: OnItemClickListener): RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
-
-    //private lateinit var onItemClickCallback: OnItemClickCallback
 
     fun setOnItemClickCallback(onItemClickCallback: OnItemClickListener) {
         listener = onItemClickCallback
@@ -49,7 +45,6 @@ class UserAdapter (private val list: ArrayList<UsersResponse>, private var liste
                     .circleCrop()
                     .into(imgPhoto)
             }
-
         }
     }
 
@@ -57,7 +52,4 @@ class UserAdapter (private val list: ArrayList<UsersResponse>, private var liste
         fun onItemClick(data: UsersResponse)
     }
 
-//    interface OnItemClickCallback {
-//        fun onItemClicked(data: UsersResponse)
-//    }
 }

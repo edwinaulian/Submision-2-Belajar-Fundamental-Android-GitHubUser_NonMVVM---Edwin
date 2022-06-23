@@ -40,6 +40,7 @@
             android:layout_toEndOf="@id/img_item_avatar_detail_activity_following"
             android:layout_weight="1"
             android:textSize="16sp"
+            android:text="@string/content_tab_following"
             android:textStyle="bold"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintStart_toEndOf="@+id/img_item_avatar_detail_activity_following"

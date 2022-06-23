@@ -6,43 +6,42 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
-import com.example.githubapi.ListFollowersResponseItem
-import com.example.githubapi.R
-import com.example.githubapi.RetrofitClient
+import androidx.recyclerview.widget.RecyclerView
+import com.example.githubapi.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class FollowingFragment : Fragment() {
+class FollowingFragment(user: String) : Fragment() {
 
     private val list = ArrayList<ListFollowersResponseItem>()
+    private val user = user;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val llm = LinearLayoutManager(context)
-        llm.orientation = LinearLayoutManager.VERTICAL
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_following, container, false)
+        return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val user = arguments?.getString("key")
+        val activity: MoveWithObjectActivity? = activity as MoveWithObjectActivity?
+        activity.toString()
         if (user != null) {
-            val client = RetrofitClient.getApiService().getFollowers(user)
+            val client = RetrofitClient.repositorioRetrofit().getFollowing(user)
             client.enqueue(object: Callback<ArrayList<ListFollowersResponseItem>> {
                 override fun onResponse(call: Call<ArrayList<ListFollowersResponseItem>>, response: Response<ArrayList<ListFollowersResponseItem>>) {
                     if (response.isSuccessful) {
                         val responseBody = response.body()
                         if (responseBody != null) {
                             response.body()?.let { list.addAll(it) }
-                            bindImageAva(view, responseBody)
+                            val adapter = UserFollowingAdapter(list, this@FollowingFragment)
+                            val rvUser: RecyclerView = view.findViewById(R.id.rvUser)
+                            rvUser.layoutManager = LinearLayoutManager(view.context)
+                            rvUser.adapter = adapter
                         }
                     } else {
                         Log.e(FollowingFragment.TAG,"onFailure: ${response.message()}")
@@ -53,24 +52,6 @@ class FollowingFragment : Fragment() {
                     Log.e(FollowingFragment.TAG, "onFailure: ${t.message}")
                 }
             })
-        }
-    }
-
-    private fun bindImageAva(view: View, data: ArrayList<ListFollowersResponseItem>?) {
-        val imgPhoto  : ImageView = view.findViewById(R.id.img_item_avatar_detail_activity_following)
-        val tvUserName: TextView = view.findViewById(R.id.tvUserNameListFollowing)
-        val tvUserType: TextView = view.findViewById(R.id.tvTypeListFollowing)
-        if (data != null) {
-            for (item in data) {
-                if (data != null) {
-                    tvUserName.text = item.login
-                    tvUserType.text = item.type
-                    Glide.with(this@FollowingFragment)
-                        .load(item.avatarUrl)
-                        .circleCrop()
-                        .into(imgPhoto)
-                }
-            }
         }
     }
 

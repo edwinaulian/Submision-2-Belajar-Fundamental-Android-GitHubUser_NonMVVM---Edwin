@@ -39,6 +39,7 @@
             android:layout_marginEnd="8dp"
             android:layout_toEndOf="@id/img_item_avatar_detail_activity_followers"
             android:layout_weight="1"
+            android:text="@string/content_tab_followers"
             android:textSize="16sp"
             android:textStyle="bold"
             card_view:layout_constraintEnd_toEndOf="parent"

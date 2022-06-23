@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 
 @Suppress("DEPRECATION")
 class SplashScreen : AppCompatActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.splashscreen)
@@ -26,6 +25,4 @@ class SplashScreen : AppCompatActivity() {
             finish()
         }, times.toLong())
     }
-
-
 }

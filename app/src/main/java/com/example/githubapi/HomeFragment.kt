@@ -5,9 +5,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.Navigation
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import com.example.githubapi.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
@@ -22,9 +19,6 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-         binding.rvUser.setOnClickListener(
-             Navigation.createNavigateOnClickListener(R.id.action_homeFragment_to_detailFragment)
-         )
     }
 
     override fun onDestroy() {

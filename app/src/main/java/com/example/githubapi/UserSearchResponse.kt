@@ -1,11 +1,8 @@
 package com.example.githubapi
 
-import com.example.githubapi.model.User
 import com.google.gson.annotations.SerializedName
 
 data class UserSearchResponse(
-
-//	val items : ArrayList<User>
 
 	@field:SerializedName("total_count")
 	val totalCount: Int,

@@ -6,10 +6,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentTransaction
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
-import com.example.githubapi.tabMenu.FollowersFragment
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import retrofit2.Call
@@ -25,18 +23,18 @@ class MoveWithObjectActivity : AppCompatActivity() {
         val user = intent.getStringExtra(EXTRA_USER).toString()
 
         val bundle = Bundle()
-        bundle.putString("key", user) // Put anything what you want
+        bundle.putString("key", user)
 
-        val transaction = this.supportFragmentManager.beginTransaction()
-        val fragment1 = FollowersFragment()
-        fragment1.arguments = bundle
-        transaction.replace(R.id.relativeLayout, fragment1)
-        transaction.addToBackStack(null)
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-        transaction.commit()
+//        val transaction = this.supportFragmentManager.beginTransaction()
+//        val fragment1 = FollowersFragment()
+//        fragment1.arguments = bundle
+//        transaction.replace(R.id.relativeLayout, fragment1)
+//        transaction.addToBackStack(null)
+//        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+//        transaction.commit()
 
 
-        val sectionsPagerAdapter = SectionsPagerAdapter(this)
+        val sectionsPagerAdapter = SectionsPagerAdapter(this,user)
         val viewPager: ViewPager2 = findViewById(R.id.view_pager)
         viewPager.adapter = sectionsPagerAdapter
         val tabs: TabLayout = findViewById(R.id.tabs)
