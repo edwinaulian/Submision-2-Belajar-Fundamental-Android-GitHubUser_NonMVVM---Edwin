@@ -13,13 +13,18 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class FollowingFragment(user: String) : Fragment() {
+class FollowingFragment () : Fragment() {
 
     private val list = ArrayList<ListFollowersResponseItem>()
-    private val user = user;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val bundle = this.arguments
+        if (bundle != null) {
+            val user = ""
+            val myUserDetail = bundle.getString("key", user)
+            USER = myUserDetail
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -30,6 +35,7 @@ class FollowingFragment(user: String) : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val activity: MoveWithObjectActivity? = activity as MoveWithObjectActivity?
         activity.toString()
+        val user = USER
         if (user != null) {
             val client = RetrofitClient.repositorioRetrofit().getFollowing(user)
             client.enqueue(object: Callback<ArrayList<ListFollowersResponseItem>> {
@@ -57,5 +63,6 @@ class FollowingFragment(user: String) : Fragment() {
 
     companion object {
         private const val TAG = "Following User"
+        private var USER = ""
     }
 }

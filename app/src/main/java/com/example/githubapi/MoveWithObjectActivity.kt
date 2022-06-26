@@ -6,8 +6,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentTransaction
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
+import com.example.githubapi.tabMenu.FollowersFragment
+import com.example.githubapi.tabMenu.FollowingFragment
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import retrofit2.Call
@@ -19,22 +22,27 @@ class MoveWithObjectActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_move_with_object_detailuser)
-
         val user = intent.getStringExtra(EXTRA_USER).toString()
-
         val bundle = Bundle()
         bundle.putString("key", user)
 
-//        val transaction = this.supportFragmentManager.beginTransaction()
-//        val fragment1 = FollowersFragment()
-//        fragment1.arguments = bundle
-//        transaction.replace(R.id.relativeLayout, fragment1)
-//        transaction.addToBackStack(null)
-//        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-//        transaction.commit()
+        val transaction = this.supportFragmentManager.beginTransaction()
+        val fragment1 = FollowersFragment()
+        fragment1.arguments = bundle
+        transaction.replace(R.id.relativeLayout, fragment1)
+        transaction.addToBackStack(null)
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+        transaction.commit()
 
+        val transaction2 = this.supportFragmentManager.beginTransaction()
+        val fragment2 = FollowingFragment()
+        fragment2.arguments = bundle
+        transaction2.replace(R.id.relativeLayout, fragment2)
+        transaction2.addToBackStack(null)
+        transaction2.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+        transaction2.commit()
 
-        val sectionsPagerAdapter = SectionsPagerAdapter(this,user)
+        val sectionsPagerAdapter = SectionsPagerAdapter(this)
         val viewPager: ViewPager2 = findViewById(R.id.view_pager)
         viewPager.adapter = sectionsPagerAdapter
         val tabs: TabLayout = findViewById(R.id.tabs)
@@ -74,6 +82,8 @@ class MoveWithObjectActivity : AppCompatActivity() {
         var imgPhoto: ImageView = findViewById(R.id.img_item_avatar_detail_activity)
         val followers: TextView = findViewById(R.id.tvFollowers)
         val following: TextView = findViewById(R.id.tvFollowing)
+        val userNameLogin: TextView = findViewById(R.id.tvLoginName)
+        val userName : TextView = findViewById(R.id.tvUserName)
         if (data != null) {
             Glide.with(this)
                 .load(data.avatarUrl)
@@ -81,8 +91,10 @@ class MoveWithObjectActivity : AppCompatActivity() {
                 .into(imgPhoto)
             val countFollowers = data.followers
             val countFollowing = data.following
-            followers.text = countFollowers.toString()
-            following.text = countFollowing.toString()
+            followers.text = "Followers: ${countFollowers.toString()}"
+            following.text = "Following: ${countFollowing.toString()}"
+            userNameLogin.text = "User Name: ${data.login}"
+            userName.text = "Name: ${data.name as CharSequence?}"
         }
     }
 
