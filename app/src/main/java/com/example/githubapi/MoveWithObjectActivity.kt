@@ -2,7 +2,9 @@ package com.example.githubapi
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
@@ -54,6 +56,7 @@ class MoveWithObjectActivity : AppCompatActivity() {
     }
 
     private fun getDetailUser(user: String) {
+        showLoading(true)
         val client =RetrofitClient.getApiService().getDetailUser(user)
         client.enqueue(
             object: Callback<UserDetailResponse> {
@@ -62,6 +65,7 @@ class MoveWithObjectActivity : AppCompatActivity() {
                     response: Response<UserDetailResponse>
                 ) {
                     if (response.isSuccessful) {
+                        showLoading(false)
                         val responseBody = response.body()
                         if (responseBody != null) {
                             bindImageAva(responseBody)
@@ -95,6 +99,15 @@ class MoveWithObjectActivity : AppCompatActivity() {
             following.text = "Following: ${countFollowing.toString()}"
             userNameLogin.text = "User Name: ${data.login}"
             userName.text = "Name: ${data.name as CharSequence?}"
+        }
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        val binding : ProgressBar = findViewById(R.id.progressBarActDetail)
+        if (isLoading) {
+            binding.visibility = View.VISIBLE
+        } else {
+            binding.visibility = View.GONE
         }
     }
 
