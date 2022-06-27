@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.githubapi.*
@@ -32,6 +33,7 @@ class FollowingFragment () : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        showLoading(view, true)
         super.onViewCreated(view, savedInstanceState)
         val activity: MoveWithObjectActivity? = activity as MoveWithObjectActivity?
         activity.toString()
@@ -41,6 +43,7 @@ class FollowingFragment () : Fragment() {
             client.enqueue(object: Callback<ArrayList<ListFollowersResponseItem>> {
                 override fun onResponse(call: Call<ArrayList<ListFollowersResponseItem>>, response: Response<ArrayList<ListFollowersResponseItem>>) {
                     if (response.isSuccessful) {
+                        showLoading(view, false)
                         val responseBody = response.body()
                         if (responseBody != null) {
                             response.body()?.let { list.addAll(it) }
@@ -58,6 +61,15 @@ class FollowingFragment () : Fragment() {
                     Log.e(FollowingFragment.TAG, "onFailure: ${t.message}")
                 }
             })
+        }
+    }
+
+    private fun showLoading(view: View, isLoading: Boolean) {
+        val binding : ProgressBar = view.findViewById(R.id.progressBar)
+        if (isLoading) {
+            binding.visibility = View.VISIBLE
+        } else {
+            binding.visibility = View.GONE
         }
     }
 
